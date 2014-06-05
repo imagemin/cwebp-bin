@@ -1,0 +1,42 @@
+{
+  "name": "cwebp-bin",
+  "version": "0.1.0",
+  "description": "cwebp node.js wrapper that convert JPG or PNG into WebP",
+  "bin": {
+    "cwebp": "cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/1000ch/node-cwebp-bin.git"
+  },
+  "scripts": {
+    "test": "mocha --reporter spec --timeout 0",
+    "postinstall": "node index.js"
+  },
+  "author": {
+    "name": "1000ch",
+    "email": "shogo.sensui@gmail.com",
+    "url": "https://github.com/1000ch"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "licenses": [{
+    "type": "BSD"
+  }],
+  "dependencies": {
+    "bin-build": "^0.1.0",
+    "bin-wrapper": "^0.3.0",
+    "chalk": "^0.4.0"
+  },
+  "devDependencies": {
+    "bin-check": "^0.1.0",
+    "mocha": "^1.18.2",
+    "rimraf": "^2.2.6"
+  },
+  "files": [
+    "cli.js",
+    "index.js",
+    "test"
+  ]
+}
