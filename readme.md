@@ -17,7 +17,7 @@ But if PNG (event though 8-bit converted!) contains many colors, it depends.
 
 | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/jpg.jpg) | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/jpg.webp) |
 |---|---|
-| JPEGMini optimized jpg (69,560 bytes) | WebP converted (24,300 bytes) |
+| JPEGMini optimized jpg (39,335 bytes) | WebP converted (24,300 bytes) |
 
 In most cases, WebP images are smaller than JPEG images.
 
