@@ -9,11 +9,11 @@
 
 | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/png.png) | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/png.webp) |
 |---|---|
-| 8bit converted png | WebP converted |
+| 8bit converted png (14,225 bytes) | WebP converted (14,924 bytes) |
 
 | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/jpg.jpg) | ![](https://github.com/1000ch/node-cwebp-bin/raw/master/examples/jpg.webp) |
 |---|---|
-| JPEGMini optimized jpg | WebP converted |
+| JPEGMini optimized jpg (69,560 bytes) | WebP converted (24,300 bytes) |
 
 ## Dependency
 
