@@ -5,6 +5,16 @@
 [![Dependency Status](https://david-dm.org/1000ch/node-cwebp-bin.svg)](https://david-dm.org/1000ch/node-cwebp-bin)
 [![devDependency Status](https://david-dm.org/1000ch/node-cwebp-bin/dev-status.svg)](https://david-dm.org/1000ch/node-cwebp-bin#info=devDependencies)
 
+## Examples
+
+| ![](/raw/master/examples/png.png) | ![](/raw/master/examples/png.webp) |
+|---|
+| 8bit converted png | WebP converted |
+
+| ![](/raw/master/examples/jpg.jpg) | ![](/raw/master/examples/jpg.webp) |
+|---|
+| JPEGMini optimized jpg | WebP converted |
+
 ## Dependency
 
 WebP requires following libraries. See [detail](https://developers.google.com/speed/webp/docs/compiling).
