@@ -1,4 +1,4 @@
-# node-cwebp-bin
+# [node-cwebp-bin](https://www.npmjs.org/package/cwebp-bin)
 
 [![Build Status](https://travis-ci.org/1000ch/node-cwebp-bin.svg?branch=master)](https://travis-ci.org/1000ch/node-cwebp-bin)
 [![NPM version](https://badge.fury.io/js/cwebp-bin.svg)](http://badge.fury.io/js/cwebp-bin)
