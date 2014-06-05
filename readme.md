@@ -29,6 +29,14 @@ $ npm install --save cwebp-bin
 
 ## Usage
 
+### Command Line
+
+```sh
+$ cwebp input.png -o output.webp
+```
+
+### From source file
+
 ```js
 var execFile = require('child_process').execFile;
 var cwebp = require('cwebp-bin').path;
