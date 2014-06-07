@@ -40,8 +40,7 @@
   },
   "files": [
     "cli.js",
-    "index.js",
-    "test"
+    "index.js"
   ],
   "keywords": [
     "image",

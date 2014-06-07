@@ -21,13 +21,7 @@ var bin = new BinWrapper()
  */
 fs.exists(bin.use(), function (exists) {
   if (!exists) {
-    var args = [
-      path.join(__dirname, 'test/fixtures/test.png'),
-      '-o',
-      path.join(__dirname, 'test/fixtures/test.webp')
-    ];
-
-    bin.run(args, function (error) {
+    bin.run('-version', function (error) {
       if (error) {
         console.log(chalk.red('✗ pre-build test failed, compiling from source...'));
 
