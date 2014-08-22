@@ -22,10 +22,15 @@ describe('cwebp()', function () {
     var tmp = path.join(__dirname, 'tmp');
     var builder = new BinBuild()
       .src('https://webp.googlecode.com/files/libwebp-0.4.0.tar.gz')
-      .make('./configure && make && mv ./examples/.libs/cwebp ' + path.join(tmp, 'cwebp'));
+      .cmd('node -p "require(\'fs\').chmodSync(\'./configure\', \'755\')"')
+      .cmd('./configure && make && mv ./examples/.libs/cwebp ' + path.join(tmp, 'cwebp'));
 
     builder.build(function (error) {
-      assert(!error);
+      if (error) {
+        callback(error);
+        return;
+      }
+
       assert(fs.existsSync(path.join(tmp, 'cwebp')));
       callback();
     });
