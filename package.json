@@ -25,9 +25,11 @@
   "engines": {
     "node": ">=0.10.0"
   },
-  "licenses": [{
-    "type": "BSD"
-  }],
+  "licenses": [
+    {
+      "type": "BSD"
+    }
+  ],
   "dependencies": {
     "bin-build": "^1.0.0",
     "bin-wrapper": "^1.0.0",
@@ -35,8 +37,8 @@
   },
   "devDependencies": {
     "bin-check": "^1.0.0",
-    "mocha": "^1.18.2",
-    "rimraf": "^2.2.6"
+    "mocha": "^1.21.4",
+    "rimraf": "^2.2.8"
   },
   "files": [
     "cli.js",
