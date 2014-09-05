@@ -22,8 +22,8 @@ describe('cwebp()', function () {
     var tmp = path.join(__dirname, 'tmp');
     var builder = new BinBuild()
       .src('http://downloads.webmproject.org/releases/webp/libwebp-0.4.1.tar.gz')
-      .cmd('node -p "require(\'fs\').chmodSync(\'./configure\', \'755\')"')
-      .cmd('./configure && make && mv ./examples/.libs/cwebp ' + path.join(tmp, 'cwebp'));
+      .cmd('./configure --prefix="' + tmp + '" --bindir="' + tmp + '"')
+      .cmd('make && make install');
 
     builder.build(function (error) {
       if (error) {
