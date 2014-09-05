@@ -27,10 +27,8 @@ describe('cwebp()', function () {
 
     builder.build(function (error) {
       if (error) {
-        callback(error);
-        return;
+        return callback(error);
       }
-
       assert(fs.existsSync(path.join(tmp, 'cwebp')));
       callback();
     });
@@ -45,7 +43,11 @@ describe('cwebp()', function () {
     ];
 
     binCheck(binPath, args, function (error, works) {
-      callback(assert.equal(works, true));
+      if (error) {
+        return callback(error);
+      }
+      assert.equal(works, true);
+      callback();
     });
   });
 
@@ -57,8 +59,12 @@ describe('cwebp()', function () {
       path.join(__dirname, 'tmp/test-png.webp')
     ];
 
-    execFile(binPath, args, function () {
-      callback(assert(fs.statSync(path.join(__dirname, 'tmp/test-png.webp'))));
+    execFile(binPath, args, function (error) {
+      if (error) {
+        return callback(error);
+      }
+      assert(fs.statSync(path.join(__dirname, 'tmp/test-png.webp')))
+      callback();
     });
   });
 
@@ -70,8 +76,12 @@ describe('cwebp()', function () {
       path.join(__dirname, 'tmp/test-jpg.webp')
     ];
 
-    execFile(binPath, args, function () {
-      callback(assert(fs.statSync(path.join(__dirname, 'tmp/test-jpg.webp'))));
+    execFile(binPath, args, function (error) {
+      if (error) {
+        return callback(error);
+      }
+      assert(fs.statSync(path.join(__dirname, 'tmp/test-jpg.webp')))
+      callback();
     });
   });
 });
