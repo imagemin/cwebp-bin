@@ -1,87 +1,94 @@
-/*global afterEach, beforeEach, describe, it */
 'use strict';
 
-var assert = require('assert');
 var binCheck = require('bin-check');
 var BinBuild = require('bin-build');
 var execFile = require('child_process').execFile;
 var fs = require('fs');
+var mkdir = require('mkdirp');
 var path = require('path');
 var rm = require('rimraf');
+var test = require('ava');
+var tmp = path.join(__dirname, 'tmp');
 
-describe('cwebp()', function () {
-	afterEach(function (callback) {
-		rm(path.join(__dirname, 'tmp'), callback);
-	});
+test('rebuild the cwebp binaries', function (t) {
+	t.plan(3);
 
-	beforeEach(function () {
-		fs.mkdirSync(path.join(__dirname, 'tmp'));
-	});
+	var version = require('../').version;
+	var builder = new BinBuild()
+		.src('http://downloads.webmproject.org/releases/webp/libwebp-' + version + '.tar.gz')
+		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
+		.cmd('make && make install');
 
-	it('should rebuild the cwebp binaries', function (callback) {
-		var tmp = path.join(__dirname, 'tmp');
-		var builder = new BinBuild()
-			.src('http://downloads.webmproject.org/releases/webp/libwebp-0.4.1.tar.gz')
-			.cmd('./configure --prefix="' + tmp + '" --bindir="' + tmp + '"')
-			.cmd('make && make install');
+	builder.build(function (err) {
+		t.assert(!err);
 
-		builder.build(function (error) {
-			if (error) {
-				return callback(error);
-			}
-			assert(fs.existsSync(path.join(tmp, 'cwebp')));
-			callback();
+		fs.exists(path.join(tmp, 'cwebp'), function (exists) {
+			t.assert(exists);
+
+			rm(tmp, function (err) {
+				t.assert(!err);
+			});
 		});
 	});
+});
 
-	it('should return path to binary and verify that it is working', function (callback) {
-		var binPath = require('../').path;
-		var args = [
-			path.join(__dirname, 'fixtures/test.png'),
-			'-o',
-			path.join(__dirname, 'tmp/test.webp')
-		];
+test('return path to binary and verify that it is working', function (t) {
+	t.plan(2);
 
-		binCheck(binPath, args, function (error, works) {
-			if (error) {
-				return callback(error);
-			}
-			assert.equal(works, true);
-			callback();
+	binCheck(require('../').path, ['-version'], function (err, works) {
+		t.assert(!err);
+		t.assert(works);
+	});
+});
+
+test('minify and convert a PNG to WebP', function (t) {
+	t.plan(5);
+
+	var args = [
+		path.join(__dirname, 'fixtures/test.png'),
+		'-o', path.join(tmp, 'test.webp')
+	];
+
+	mkdir(tmp, function (err) {
+		t.assert(!err);
+
+		execFile(require('../').path, args, function (err) {
+			t.assert(!err);
+
+			fs.stat(path.join(__dirname, 'fixtures/test.png'), function (err, a) {
+				t.assert(!err);
+
+				fs.stat(path.join(tmp, 'test.webp'), function (err, b) {
+					t.assert(!err);
+					t.assert(b.size < a.size);
+				});
+			});
 		});
 	});
+});
 
-	it('should convert PNG to WebP', function (callback) {
-		var binPath = require('../').path;
-		var args = [
-			path.join(__dirname, 'fixtures/test.png'),
-			'-o',
-			path.join(__dirname, 'tmp/test-png.webp')
-		];
+test('minify and convert a JPG to WebP', function (t) {
+	t.plan(5);
 
-		execFile(binPath, args, function (error) {
-			if (error) {
-				return callback(error);
-			}
-			assert(fs.statSync(path.join(__dirname, 'tmp/test-png.webp')))
-			callback();
-		});
-	});
+	var args = [
+		path.join(__dirname, 'fixtures/test.jpg'),
+		'-o', path.join(tmp, 'test.webp')
+	];
 
-	it('should convert JPG to WebP', function (callback) {
-		var binPath = require('../').path;
-		var args = [
-			path.join(__dirname, 'fixtures/test.jpg'),
-			'-o',
-			path.join(__dirname, 'tmp/test-jpg.webp')
-		];
+	mkdir(tmp, function (err) {
+		t.assert(!err);
 
-		execFile(binPath, args, function (error) {
-			if (error) {
-				return callback(error);
-			}
-			assert(fs.statSync(path.join(__dirname, 'tmp/test-jpg.webp')))
-			callback();
+		execFile(require('../').path, args, function (err) {
+			t.assert(!err);
+
+			fs.stat(path.join(__dirname, 'fixtures/test.jpg'), function (err, a) {
+				t.assert(!err);
+
+				fs.stat(path.join(tmp, 'test.webp'), function (err, b) {
+					t.assert(!err);
+					t.assert(b.size < a.size);
+				});
+			});
 		});
 	});
 });
