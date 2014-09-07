@@ -1,6 +1,6 @@
 {
   "name": "cwebp-bin",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "cwebp node.js wrapper that convert JPG or PNG into WebP",
   "bin": {
     "cwebp": "cli.js"
