@@ -14,14 +14,14 @@ $ npm install --save cwebp-bin
 
 ```js
 var execFile = require('child_process').execFile;
-var cweb = require('cweb-bin').path;
+var cwebp = require('cweb-bin').path;
 
-execFile(cweb, ['input.png', '-o', 'output.png'], function (err) {
+execFile(cwebp, ['input.png', '-o', 'output.webp'], function (err) {
 	if (err) {
 		throw err;
 	}
 
-	console.log('Image minified!');
+	console.log('Image is converted!');
 });
 ```
 
