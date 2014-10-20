@@ -36,8 +36,8 @@
     "webp"
   ],
   "dependencies": {
-    "bin-build": "^1.0.0",
-    "bin-wrapper": "^1.0.0",
+    "bin-build": "^2.0.0",
+    "bin-wrapper": "^2.0.1",
     "imagemin-log": "^1.0.0"
   },
   "devDependencies": {

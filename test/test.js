@@ -18,7 +18,7 @@ test('rebuild the cwebp binaries', function (t) {
 		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
 		.cmd('make && make install');
 
-	builder.build(function (err) {
+	builder.run(function (err) {
 		t.assert(!err, err);
 
 		fs.exists(path.join(tmp, 'cwebp'), function (exists) {
