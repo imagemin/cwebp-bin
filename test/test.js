@@ -3,6 +3,7 @@
 var bin = require('../');
 var binCheck = require('bin-check');
 var BinBuild = require('bin-build');
+var compareSize = require('compare-size');
 var execFile = require('child_process').execFile;
 var fs = require('fs');
 var mkdir = require('mkdirp');
@@ -44,9 +45,11 @@ test('return path to binary and verify that it is working', function (t) {
 test('minify and convert a PNG to WebP', function (t) {
 	t.plan(5);
 
+	var src = path.join(__dirname, 'fixtures/test.png');
+	var dest = path.join(tmp, 'test-png.webp');
 	var args = [
-		path.join(__dirname, 'fixtures/test.png'),
-		'-o', path.join(tmp, 'test.webp')
+		src,
+		'-o', dest
 	];
 
 	mkdir(tmp, function (err) {
@@ -55,12 +58,12 @@ test('minify and convert a PNG to WebP', function (t) {
 		execFile(bin.path, args, function (err) {
 			t.assert(!err);
 
-			fs.stat(path.join(__dirname, 'fixtures/test.png'), function (err, a) {
-				t.assert(!err);
+			compareSize(src, dest, function(err, res) {
+				t.assert(!err, err);
+				t.assert(res[dest] < res[src]);
 
-				fs.stat(path.join(tmp, 'test.webp'), function (err, b) {
-					t.assert(!err);
-					t.assert(b.size < a.size);
+				rm(dest, function (err) {
+					t.assert(!err, err);
 				});
 			});
 		});
@@ -70,9 +73,11 @@ test('minify and convert a PNG to WebP', function (t) {
 test('minify and convert a JPG to WebP', function (t) {
 	t.plan(5);
 
+	var src = path.join(__dirname, 'fixtures/test.jpg');
+	var dest = path.join(tmp, 'test-jpg.webp');
 	var args = [
-		path.join(__dirname, 'fixtures/test.jpg'),
-		'-o', path.join(tmp, 'test.webp')
+		src,
+		'-o', dest
 	];
 
 	mkdir(tmp, function (err) {
@@ -81,12 +86,12 @@ test('minify and convert a JPG to WebP', function (t) {
 		execFile(bin.path, args, function (err) {
 			t.assert(!err);
 
-			fs.stat(path.join(__dirname, 'fixtures/test.jpg'), function (err, a) {
-				t.assert(!err);
+			compareSize(src, dest, function(err, res) {
+				t.assert(!err, err);
+				t.assert(res[dest] < res[src]);
 
-				fs.stat(path.join(tmp, 'test.webp'), function (err, b) {
-					t.assert(!err);
-					t.assert(b.size < a.size);
+				rm(dest, function (err) {
+					t.assert(!err, err);
 				});
 			});
 		});
