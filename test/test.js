@@ -1,6 +1,5 @@
 'use strict';
 
-var bin = require('../');
 var binCheck = require('bin-check');
 var BinBuild = require('bin-build');
 var compareSize = require('compare-size');
@@ -13,15 +12,16 @@ var tmp = path.join(__dirname, 'tmp');
 test('rebuild the cwebp binaries', function (t) {
 	t.plan(2);
 
+	var version = require('../').version;
 	var builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-' + bin.version + '.tar.gz')
+		.src('http://downloads.webmproject.org/releases/webp/libwebp-' + version + '.tar.gz')
 		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
 		.cmd('make && make install');
 
 	builder.build(function (err) {
-		t.assert(!err);
+		t.assert(!err, err);
 
-		fs.exists(path.join(tmp, require('../lib').use()), function (exists) {
+		fs.exists(path.join(tmp, 'cwebp'), function (exists) {
 			t.assert(exists);
 		});
 	});
@@ -30,8 +30,8 @@ test('rebuild the cwebp binaries', function (t) {
 test('return path to binary and verify that it is working', function (t) {
 	t.plan(2);
 
-	binCheck(bin.path, ['-version'], function (err, works) {
-		t.assert(!err);
+	binCheck(require('../').path, ['-version'], function (err, works) {
+		t.assert(!err, err);
 		t.assert(works);
 	});
 });
@@ -46,8 +46,8 @@ test('minify and convert a PNG to WebP', function (t) {
 		'-o', dest
 	];
 
-	execFile(bin.path, args, function (err) {
-		t.assert(!err);
+	execFile(require('../').path, args, function (err) {
+		t.assert(!err, err);
 
 		compareSize(src, dest, function(err, res) {
 			t.assert(!err, err);
@@ -66,7 +66,7 @@ test('minify and convert a JPG to WebP', function (t) {
 		'-o', dest
 	];
 
-	execFile(bin.path, args, function (err) {
+	execFile(require('../').path, args, function (err) {
 		t.assert(!err);
 
 		compareSize(src, dest, function(err, res) {
