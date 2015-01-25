@@ -1,10 +1,10 @@
 'use strict';
 
-var bin = require('./lib');
+var path = require('path');
 
 /**
  * Module exports
  */
 
-module.exports.path = bin.path();
-module.exports.version = bin.v;
+exports.path = path.resolve('vendor', process.platform === 'win32' ? 'cwebp.exe' : 'cwebp');
+exports.version = '0.4.2';

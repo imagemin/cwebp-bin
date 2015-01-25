@@ -1,8 +1,24 @@
 'use strict';
 
-var bin = require('./');
 var BinBuild = require('bin-build');
+var BinWrapper = require('bin-wrapper');
 var log = require('logalot');
+var path = require('path');
+var pkg = require('./package.json');
+
+var BASE_URL = 'https://raw.github.com/imagemin/cwebp-bin/v' + pkg.version + '/vendor/';
+var main = require('./');
+
+/**
+ * Initialize a new BinWrapper
+ */
+
+var bin = new BinWrapper({ progress: false })
+	.src(BASE_URL + 'osx/cwebp', 'darwin')
+	.src(BASE_URL + 'linux/cwebp', 'linux')
+	.src(BASE_URL + 'win/cwebp.exe', 'win32')
+	.dest(path.dirname(main.path))
+	.use(path.basename(main.path));
 
 /**
  * Install binary and check whether it works
@@ -21,11 +37,11 @@ bin.run(['-version'], function (err) {
 		].join(' ');
 
 		var builder = new BinBuild()
-			.src('http://downloads.webmproject.org/releases/webp/libwebp-' + bin.v + '.tar.gz')
+			.src('http://downloads.webmproject.org/releases/webp/libwebp-' + main.version + '.tar.gz')
 			.cmd(cfg)
 			.cmd('make && make install');
 
-		return builder.run(function (err) {
+		builder.run(function (err) {
 			if (err) {
 				log.error(err.stack);
 				return;
@@ -33,6 +49,8 @@ bin.run(['-version'], function (err) {
 
 			log.success('cwebp built successfully');
 		});
+
+		return;
 	}
 
 	log.success('cwebp pre-build test passed successfully');
