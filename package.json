@@ -16,13 +16,13 @@
     "cwebp": "cli.js"
   },
   "scripts": {
-    "postinstall": "node lib/install.js",
-    "test": "mkdir test/tmp && node test/test.js && rm -rf test/tmp"
+    "postinstall": "node install.js",
+    "test": "mkdir -p test/tmp && node test/test.js && rm -rf test/tmp"
   },
   "files": [
     "cli.js",
     "index.js",
-    "lib"
+    "install.js"
   ],
   "keywords": [
     "compress",
