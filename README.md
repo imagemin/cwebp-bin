@@ -14,7 +14,7 @@ $ npm install --save cwebp-bin
 
 ```js
 var execFile = require('child_process').execFile;
-var cwebp = require('cweb-bin').path;
+var cwebp = require('cwebp-bin').path;
 
 execFile(cwebp, ['input.png', '-o', 'output.webp'], function (err) {
 	if (err) {
