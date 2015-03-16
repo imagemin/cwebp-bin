@@ -7,4 +7,4 @@ var path = require('path');
  */
 
 exports.path = path.join(__dirname, 'vendor', process.platform === 'win32' ? 'cwebp.exe' : 'cwebp');
-exports.version = '0.4.2';
+exports.version = '0.4.3';
