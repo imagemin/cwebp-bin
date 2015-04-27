@@ -1,11 +1,11 @@
-# cwebp-bin [![Build Status](http://img.shields.io/travis/imagemin/cwebp-bin.svg?style=flat)](http://travis-ci.org/imagemin/cwebp-bin)
+# cwebp-bin [![Build Status](https://travis-ci.org/imagemin/cwebp-bin.svg?branch=master)](https://travis-ci.org/imagemin/cwebp-bin)
 
 > WebP is a new image format that provides lossless and lossy compression for images on the web. WebP lossless images are 26% smaller in size compared to PNGs. WebP lossy images are 25-34% smaller in size compared to JPEG images at equivalent SSIM index.
 
 
 ## Install
 
-```sh
+```
 $ npm install --save cwebp-bin
 ```
 
@@ -14,7 +14,7 @@ $ npm install --save cwebp-bin
 
 ```js
 var execFile = require('child_process').execFile;
-var cwebp = require('cwebp-bin').path;
+var cwebp = require('cwebp-bin');
 
 execFile(cwebp, ['input.png', '-o', 'output.webp'], function (err) {
 	if (err) {
@@ -28,11 +28,11 @@ execFile(cwebp, ['input.png', '-o', 'output.webp'], function (err) {
 
 ## CLI
 
-```sh
+```
 $ npm install --global cwebp-bin
 ```
 
-```sh
+```
 $ cwebp --help
 ```
 
