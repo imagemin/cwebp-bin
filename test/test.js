@@ -1,20 +1,20 @@
 'use strict';
 
-var binCheck = require('bin-check');
-var BinBuild = require('bin-build');
-var compareSize = require('compare-size');
 var execFile = require('child_process').execFile;
 var fs = require('fs');
 var path = require('path');
+var binCheck = require('bin-check');
+var BinBuild = require('bin-build');
+var compareSize = require('compare-size');
+var cwebp = require('../');
 var test = require('ava');
 var tmp = path.join(__dirname, 'tmp');
 
 test('rebuild the cwebp binaries', function (t) {
 	t.plan(2);
 
-	var version = require('../').version;
 	var builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-' + version + '.tar.gz')
+		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.4.3.tar.gz')
 		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
 		.cmd('make && make install');
 
@@ -30,7 +30,7 @@ test('rebuild the cwebp binaries', function (t) {
 test('return path to binary and verify that it is working', function (t) {
 	t.plan(2);
 
-	binCheck(require('../').path, ['-version'], function (err, works) {
+	binCheck(cwebp, ['-version'], function (err, works) {
 		t.assert(!err, err);
 		t.assert(works);
 	});
@@ -46,7 +46,7 @@ test('minify and convert a PNG to WebP', function (t) {
 		'-o', dest
 	];
 
-	execFile(require('../').path, args, function (err) {
+	execFile(cwebp, args, function (err) {
 		t.assert(!err, err);
 
 		compareSize(src, dest, function(err, res) {
@@ -66,7 +66,7 @@ test('minify and convert a JPG to WebP', function (t) {
 		'-o', dest
 	];
 
-	execFile(require('../').path, args, function (err) {
+	execFile(cwebp, args, function (err) {
 		t.assert(!err);
 
 		compareSize(src, dest, function(err, res) {

@@ -16,13 +16,13 @@
     "cwebp": "cli.js"
   },
   "scripts": {
-    "postinstall": "node install.js",
+    "postinstall": "node lib/install.js",
     "test": "mkdir -p test/tmp && node test/test.js && rm -rf test/tmp"
   },
   "files": [
     "cli.js",
     "index.js",
-    "install.js"
+    "lib"
   ],
   "keywords": [
     "compress",
@@ -37,7 +37,7 @@
   ],
   "dependencies": {
     "bin-build": "^2.0.0",
-    "bin-wrapper": "^2.0.1",
+    "bin-wrapper": "^3.0.1",
     "logalot": "^2.0.0"
   },
   "devDependencies": {
