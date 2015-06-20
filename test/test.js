@@ -1,17 +1,17 @@
 'use strict';
 
 var execFile = require('child_process').execFile;
-var fs = require('fs');
 var path = require('path');
 var binCheck = require('bin-check');
 var BinBuild = require('bin-build');
 var compareSize = require('compare-size');
+var pathExists = require('path-exists');
 var cwebp = require('../');
 var test = require('ava');
 var tmp = path.join(__dirname, 'tmp');
 
 test('rebuild the cwebp binaries', function (t) {
-	t.plan(2);
+	t.plan(3);
 
 	var builder = new BinBuild()
 		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.4.3.tar.gz')
@@ -21,7 +21,8 @@ test('rebuild the cwebp binaries', function (t) {
 	builder.run(function (err) {
 		t.assert(!err, err);
 
-		fs.exists(path.join(tmp, 'cwebp'), function (exists) {
+		pathExists(path.join(tmp, 'cwebp'), function (err, exists) {
+			t.assert(!err, err);
 			t.assert(exists);
 		});
 	});
