@@ -50,7 +50,7 @@ test('minify and convert a PNG to WebP', function (t) {
 	execFile(cwebp, args, function (err) {
 		t.assert(!err, err);
 
-		compareSize(src, dest, function(err, res) {
+		compareSize(src, dest, function (err, res) {
 			t.assert(!err, err);
 			t.assert(res[dest] < res[src]);
 		});
@@ -70,7 +70,7 @@ test('minify and convert a JPG to WebP', function (t) {
 	execFile(cwebp, args, function (err) {
 		t.assert(!err);
 
-		compareSize(src, dest, function(err, res) {
+		compareSize(src, dest, function (err, res) {
 			t.assert(!err, err);
 			t.assert(res[dest] < res[src]);
 		});

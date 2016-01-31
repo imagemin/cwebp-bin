@@ -17,7 +17,7 @@
   },
   "scripts": {
     "postinstall": "node lib/install.js",
-    "test": "mkdir -p test/tmp && node test/test.js && rm -rf test/tmp"
+    "test": "xo && mkdir -p test/tmp && node test/test.js && rm -rf test/tmp"
   },
   "files": [
     "cli.js",
@@ -44,6 +44,7 @@
     "ava": "^0.0.4",
     "bin-check": "^1.0.0",
     "compare-size": "^1.0.1",
-    "path-exists": "^1.0.0"
+    "path-exists": "^1.0.0",
+    "xo": "^0.12.1"
   }
 }
