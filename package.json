@@ -7,8 +7,24 @@
   "author": {
     "name": "1000ch",
     "email": "shogo.sensui@gmail.com",
-    "url": "http://github.com/1000ch"
+    "url": "github.com/1000ch"
   },
+  "maintainers": [
+    {
+      "name": "Sindre Sorhus",
+      "email": "sindresorhus@gmail.com",
+      "url": "sindresorhus.com"
+    },
+    {
+      "name": "Kevin Mårtensson",
+      "email": "kevinmartensson@gmail.com",
+      "url": "github.com/kevva"
+    },
+    {
+      "name": "Shinnosuke Watanabe",
+      "url": "github.com/shinnn"
+    }
+  ],
   "engines": {
     "node": ">=0.10.0"
   },
