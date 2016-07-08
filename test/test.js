@@ -14,7 +14,7 @@ test('rebuild the cwebp binaries', function (t) {
 	t.plan(3);
 
 	var builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.0.tar.gz')
+		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.1.tar.gz')
 		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
 		.cmd('make && make install');
 
