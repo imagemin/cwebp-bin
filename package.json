@@ -25,15 +25,15 @@
       "url": "github.com/shinnn"
     }
   ],
-  "engines": {
-    "node": ">=0.10.0"
-  },
   "bin": {
     "cwebp": "cli.js"
   },
+  "engines": {
+    "node": ">=4"
+  },
   "scripts": {
     "postinstall": "node lib/install.js",
-    "test": "xo && mkdir -p test/tmp && node test/test.js && rm -rf test/tmp"
+    "test": "xo && ava"
   },
   "files": [
     "cli.js",
@@ -41,6 +41,7 @@
     "lib"
   ],
   "keywords": [
+    "imagemin",
     "compress",
     "image",
     "img",
@@ -52,15 +53,16 @@
     "webp"
   ],
   "dependencies": {
-    "bin-build": "^2.0.0",
+    "bin-build": "^2.2.0",
     "bin-wrapper": "^3.0.1",
     "logalot": "^2.0.0"
   },
   "devDependencies": {
-    "ava": "^0.0.4",
-    "bin-check": "^1.0.0",
-    "compare-size": "^1.0.1",
-    "path-exists": "^1.0.0",
-    "xo": "^0.12.1"
+    "ava": "*",
+    "bin-check": "^4.0.1",
+    "compare-size": "^3.0.0",
+    "execa": "^0.6.3",
+    "tempy": "^0.1.0",
+    "xo": "*"
   }
 }

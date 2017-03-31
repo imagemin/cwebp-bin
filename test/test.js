@@ -1,78 +1,58 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
+const test = require('ava');
+const execa = require('execa');
+const tempy = require('tempy');
+const binCheck = require('bin-check');
+const BinBuild = require('bin-build');
+const compareSize = require('compare-size');
+const cwebp = require('..');
 
-var execFile = require('child_process').execFile;
-var path = require('path');
-var binCheck = require('bin-check');
-var BinBuild = require('bin-build');
-var compareSize = require('compare-size');
-var pathExists = require('path-exists');
-var cwebp = require('../');
-var test = require('ava');
-var tmp = path.join(__dirname, 'tmp');
-
-test('rebuild the cwebp binaries', function (t) {
-	t.plan(3);
-
-	var builder = new BinBuild()
+test.cb('rebuild the cwebp binaries', t => {
+	const tmp = tempy.directory();
+	const builder = new BinBuild()
 		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.1.tar.gz')
-		.cmd('./configure --disable-shared --prefix="' + tmp + '" --bindir="' + tmp + '"')
+		.cmd(`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`)
 		.cmd('make && make install');
 
-	builder.run(function (err) {
-		t.assert(!err, err);
-
-		pathExists(path.join(tmp, 'cwebp'), function (err, exists) {
-			t.assert(!err, err);
-			t.assert(exists);
-		});
+	builder.run(err => {
+		t.ifError(err);
+		t.true(fs.existsSync(path.join(tmp, 'cwebp')));
+		t.end();
 	});
 });
 
-test('return path to binary and verify that it is working', function (t) {
-	t.plan(2);
-
-	binCheck(cwebp, ['-version'], function (err, works) {
-		t.assert(!err, err);
-		t.assert(works);
-	});
+test('return path to binary and verify that it is working', async t => {
+	t.true(await binCheck(cwebp, ['-version']));
 });
 
-test('minify and convert a PNG to WebP', function (t) {
-	t.plan(3);
-
-	var src = path.join(__dirname, 'fixtures/test.png');
-	var dest = path.join(tmp, 'test-png.webp');
-	var args = [
+test('minify and convert a PNG to WebP', async t => {
+	const tmp = tempy.directory();
+	const src = path.join(__dirname, 'fixtures/test.png');
+	const dest = path.join(tmp, 'test-png.webp');
+	const args = [
 		src,
 		'-o', dest
 	];
 
-	execFile(cwebp, args, function (err) {
-		t.assert(!err, err);
+	await execa(cwebp, args);
+	const res = await compareSize(src, dest);
 
-		compareSize(src, dest, function (err, res) {
-			t.assert(!err, err);
-			t.assert(res[dest] < res[src]);
-		});
-	});
+	t.true(res[dest] < res[src]);
 });
 
-test('minify and convert a JPG to WebP', function (t) {
-	t.plan(3);
-
-	var src = path.join(__dirname, 'fixtures/test.jpg');
-	var dest = path.join(tmp, 'test-jpg.webp');
-	var args = [
+test('minify and convert a JPG to WebP', async t => {
+	const tmp = tempy.directory();
+	const src = path.join(__dirname, 'fixtures/test.jpg');
+	const dest = path.join(tmp, 'test-jpg.webp');
+	const args = [
 		src,
 		'-o', dest
 	];
 
-	execFile(cwebp, args, function (err) {
-		t.assert(!err);
+	await execa(cwebp, args);
+	const res = await compareSize(src, dest);
 
-		compareSize(src, dest, function (err, res) {
-			t.assert(!err, err);
-			t.assert(res[dest] < res[src]);
-		});
-	});
+	t.true(res[dest] < res[src]);
 });
