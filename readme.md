@@ -8,7 +8,7 @@ You probably want [`imagemin-webp`](https://github.com/imagemin/imagemin-webp) i
 ## Install
 
 ```
-$ npm install --save cwebp-bin
+$ npm install cwebp-bin
 ```
 
 
