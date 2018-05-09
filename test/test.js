@@ -12,7 +12,7 @@ const cwebp = require('..');
 test.cb('rebuild the cwebp binaries', t => {
 	const tmp = tempy.directory();
 	const builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.1.tar.gz')
+		.src('http://downloads.webmproject.org/releases/webp/libwebp-1.0.0.tar.gz')
 		.cmd(`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`)
 		.cmd('make && make install');
 
