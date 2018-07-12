@@ -5,22 +5,25 @@ const test = require('ava');
 const execa = require('execa');
 const tempy = require('tempy');
 const binCheck = require('bin-check');
-const BinBuild = require('bin-build');
+const binBuild = require('bin-build');
 const compareSize = require('compare-size');
 const cwebp = require('..');
 
 test.cb('rebuild the cwebp binaries', t => {
 	const tmp = tempy.directory();
-	const builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.1.tar.gz')
-		.cmd(`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`)
-		.cmd('make && make install');
-
-	builder.run(err => {
-		t.ifError(err);
-		t.true(fs.existsSync(path.join(tmp, 'cwebp')));
-		t.end();
-	});
+	binBuild
+		.url('http://downloads.webmproject.org/releases/webp/libwebp-0.6.1.tar.gz', [
+			`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`,
+			'make && make install'
+		])
+		.then(() => {
+			t.true(fs.existsSync(path.join(tmp, 'cwebp')));
+			t.end();
+		})
+		.catch(err => {
+			t.ifError(err);
+			t.end();
+		});
 });
 
 test('return path to binary and verify that it is working', async t => {
