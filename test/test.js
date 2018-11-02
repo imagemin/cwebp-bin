@@ -5,22 +5,20 @@ const test = require('ava');
 const execa = require('execa');
 const tempy = require('tempy');
 const binCheck = require('bin-check');
-const BinBuild = require('bin-build');
+const binBuild = require('bin-build');
 const compareSize = require('compare-size');
 const cwebp = require('..');
 
-test.cb('rebuild the cwebp binaries', t => {
+test('rebuild the cwebp binaries', async t => {
 	const tmp = tempy.directory();
-	const builder = new BinBuild()
-		.src('http://downloads.webmproject.org/releases/webp/libwebp-0.5.1.tar.gz')
-		.cmd(`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`)
-		.cmd('make && make install');
 
-	builder.run(err => {
-		t.ifError(err);
-		t.true(fs.existsSync(path.join(tmp, 'cwebp')));
-		t.end();
-	});
+	await binBuild
+		.url('http://downloads.webmproject.org/releases/webp/libwebp-0.6.1.tar.gz', [
+			`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`,
+			'make && make install'
+		]);
+
+	t.true(fs.existsSync(path.join(tmp, 'cwebp')));
 });
 
 test('return path to binary and verify that it is working', async t => {
@@ -33,7 +31,8 @@ test('minify and convert a PNG to WebP', async t => {
 	const dest = path.join(tmp, 'test-png.webp');
 	const args = [
 		src,
-		'-o', dest
+		'-o',
+		dest
 	];
 
 	await execa(cwebp, args);
@@ -48,7 +47,8 @@ test('minify and convert a JPG to WebP', async t => {
 	const dest = path.join(tmp, 'test-jpg.webp');
 	const args = [
 		src,
-		'-o', dest
+		'-o',
+		dest
 	];
 
 	await execa(cwebp, args);
