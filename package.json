@@ -38,7 +38,8 @@
   "files": [
     "cli.js",
     "index.js",
-    "lib"
+    "lib",
+    "vendor/source"
   ],
   "keywords": [
     "imagemin",
