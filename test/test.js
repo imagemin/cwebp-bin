@@ -13,7 +13,7 @@ test('rebuild the cwebp binaries', async t => {
 	const tmp = tempy.directory();
 
 	await binBuild
-		.url('http://downloads.webmproject.org/releases/webp/libwebp-1.0.0.tar.gz', [
+		.file(path.resolve(__dirname, '../vendor/source/libwebp.tar.gz'), [
 			`./configure --disable-shared --prefix="${tmp}" --bindir="${tmp}"`,
 			'make && make install'
 		]);
