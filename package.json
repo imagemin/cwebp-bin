@@ -1,6 +1,6 @@
 {
   "name": "cwebp-bin",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "cwebp wrapper that makes it seamlessly available as a local dependency",
   "license": "MIT",
   "repository": "imagemin/cwebp-bin",
