@@ -56,3 +56,11 @@ test('minify and convert a JPG to WebP', async t => {
 
 	t.true(res[dest] < res[src]);
 });
+
+test('download binary from specify url', t => {
+	const cwebpLib = require('../lib');
+	// How to set environment variable or npm config variable to test custom url
+	const defaultBinBaseUrl = 'https://raw.githubusercontent.com/imagemin/cwebp-bin';
+	const isDefaultUrl = cwebpLib.src().map(_src => _src.url).every(_url => _url.startsWith(defaultBinBaseUrl));
+	t.true(isDefaultUrl);
+});
