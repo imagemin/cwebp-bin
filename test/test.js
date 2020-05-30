@@ -13,7 +13,7 @@ test('rebuild the cwebp binaries', async t => {
 	const temporary = tempy.directory();
 
 	await binBuild
-		.file(path.resolve(__dirname, '../vendor/source/libwebp-1.0.2.tar.gz'), [
+		.file(path.resolve(__dirname, '../vendor/source/libwebp-1.1.0.tar.gz'), [
 			`./configure --disable-shared --prefix="${temporary}" --bindir="${temporary}"`,
 			'make && make install'
 		]);
