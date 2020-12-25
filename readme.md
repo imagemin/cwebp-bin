@@ -10,6 +10,12 @@ You probably want [`imagemin-webp`](https://github.com/imagemin/imagemin-webp) i
 ```
 $ npm install cwebp-bin
 ```
+### Install from mirror in China
+
+```shell
+npm install -g --cwebp-binary-site=https://npm.taobao.org/mirrors
+npm install cwebp-bin
+```
 
 
 ## Usage
