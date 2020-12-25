@@ -13,7 +13,7 @@ $ npm install cwebp-bin
 ### Install from mirror in China
 
 ```shell
-npm install -g --cwebp-binary-site=https://npm.taobao.org/mirrors
+npm config set cwebp-binary-site=https://npm.taobao.org/mirrors
 npm install cwebp-bin
 ```
 
