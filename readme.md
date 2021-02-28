@@ -1,4 +1,4 @@
-# cwebp-bin [![Build Status](https://travis-ci.org/imagemin/cwebp-bin.svg?branch=master)](https://travis-ci.org/imagemin/cwebp-bin)
+# cwebp-bin ![GitHub Actions Status](https://github.com/imagemin/cwebp-bin/workflows/test/badge.svg?branch=master)
 
 > [WebP](https://developers.google.com/speed/webp/) is a new image format that provides lossless and lossy compression for images on the web. WebP lossless images are 26% smaller in size compared to PNGs. WebP lossy images are 25-34% smaller in size compared to JPEG images at equivalent SSIM index.
 
