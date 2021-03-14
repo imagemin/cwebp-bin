@@ -11,6 +11,25 @@ You probably want [`imagemin-webp`](https://github.com/imagemin/imagemin-webp) i
 $ npm install cwebp-bin
 ```
 
+### Downloading From a Custom Source
+By default, this package will download cwebp-bin from GitHub. To use a custom source, set the npm config property `imagemin_local_url`. The downloader will append `/<name>/<version>/vendor/<dist>`.
+
+```
+$ npm install cwebp-bin --imagemin_local_url=https://mymirror.local/path
+```
+
+Or add property into your `.npmrc` file([https://docs.npmjs.com/files/npmrc](https://docs.npmjs.com/files/npmrc))
+
+```
+imagemin_local_url=https://mymirror.local/path
+```
+
+Another option is to use the environment variable `IMAGEMIN_LOCAL_URL`.
+
+```
+$ IMAGEMIN_LOCAL_URL=https://mymirror.local/path npm install cwebp-bin
+```
+
 
 ## Usage
 
