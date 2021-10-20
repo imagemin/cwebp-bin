@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-'use strict';
-const {spawn} = require('child_process');
-const binPath = require('.');
+import process from 'node:process';
+import {spawn} from 'node:child_process';
+import binPath from './index.js';
 
 spawn(binPath, process.argv.slice(2), {stdio: 'inherit'})
 	.on('exit', process.exit);
