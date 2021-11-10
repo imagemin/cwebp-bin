@@ -5,6 +5,7 @@
 	"license": "MIT",
 	"repository": "imagemin/cwebp-bin",
 	"type": "module",
+	"exports": "./index.js",
 	"funding": "https://github.com/imagemin/cwebp-bin?sponsor=1",
 	"bin": {
 		"cwebp": "cli.js"
