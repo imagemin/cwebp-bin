@@ -11,7 +11,7 @@
 		"cwebp": "cli.js"
 	},
 	"engines": {
-		"node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+		"node": "^14.13.1 || >=16.0.0"
 	},
 	"scripts": {
 		"postinstall": "node lib/install.js",
@@ -40,11 +40,11 @@
 		"bin-wrapper": "^4.0.1"
 	},
 	"devDependencies": {
-		"ava": "^3.15.0",
+		"ava": "^4.1.0",
 		"bin-check": "^4.1.0",
 		"compare-size": "^3.0.0",
-		"execa": "^5.1.1",
+		"execa": "^6.1.0",
 		"tempy": "^2.0.0",
-		"xo": "^0.45.0"
+		"xo": "^0.48.0"
 	}
 }
