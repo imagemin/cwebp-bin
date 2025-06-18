@@ -1,0 +1,245 @@
+name: Run build
+
+on:
+  workflow_dispatch:
+    inputs:
+      os_version:
+        description: 'Select OS'
+        required: true
+        default: '["ubuntu-latest"]'
+        type: choice
+        options:
+          - '["ubuntu-latest"]'
+          - '["macos-latest"]'
+          - '["ubuntu-latest","macos-latest"]'
+          # - '["windows-latest"]'
+
+jobs:
+  test:
+    name: Build on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.os_version) }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Linux - Install dependencies
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt update -y
+          sudo apt install -y build-essential cmake make ninja-build nasm meson libz-dev libyuv-dev libpng-dev libjpeg-dev
+
+      - name: macOS - Set up Homebrew
+        if: ${{ matrix.os == 'macos-latest' }}
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+        # run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+      - name: macOS - Install dependencies
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          # sudo apt update -y
+          # sudo apt install -y build-essential gcc
+          brew update
+          brew unlink python@3.11
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_ENV_HINTS: 1
+
+      - name: macOS - List Homebrew deps
+        if: ${{ matrix.os == 'macos-latest' }}
+        run: |
+          deps="homebrewdeps=cmake,ninja,meson,nasm,libpng,jpeg"
+          echo $deps > homebrew-deps.txt
+          echo $deps >> $GITHUB_ENV
+
+      # - name: macOS - Restore Homebrew deps from cache
+      #   if: ${{ matrix.os == 'macos-latest' }}
+      #   id: cache-homebrew-deps-restore
+      #   uses: actions/cache/restore@v4
+      #   with:
+      #     path: brew-cache
+      #     key: ${{ runner.os }}-homebrew-deps-${{ hashFiles('homebrew-deps.txt') }}
+
+      # - name: macOS - Install Homebrew deps from cache
+      #   if: ${{ matrix.os == 'macos-latest' && steps.cache-homebrew-deps-restore.outputs.cache-hit == 'true' }}
+      #   id: try-homebrew-cache
+      #   working-directory: ./brew-cache/
+      #   continue-on-error: true
+      #   env:
+      #     HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      #     HOMEBREW_NO_AUTO_UPDATE: 1
+      #     HOMEBREW_NO_ENV_HINTS: 1
+      #   run: |
+      #     deps="${{ env.homebrewdeps }}"
+      #     for i in ${deps//,/ }
+      #     do
+      #       if ls *--${i}--*.tar.gz 1> /dev/null 2>&1; then
+      #         brew list $i || brew install $(ls *--${i}--*.tar.gz)
+      #       else
+      #         echo "No archive in cache for ${i}"
+      #         rm -rf ./brew-cache/
+      #         exit 1
+      #       fi
+      #     done
+
+      - name: macOS - Install Homebrew deps
+        if: ${{ matrix.os == 'macos-latest' && (steps.cache-homebrew-deps-restore.outputs.cache-hit != 'true' || steps.try-homebrew-cache.outcome == 'failure') }}
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+          HOMEBREW_NO_AUTO_UPDATE: 1
+          HOMEBREW_NO_ENV_HINTS: 1
+        run: |
+          mkdir brew-cache
+          deps="${{ env.homebrewdeps }}"
+          for i in ${deps//,/ }
+          do
+            brew list $i &>/dev/null || brew install $i
+            # cp $(brew --cache $i) ./brew-cache/
+          done
+
+      # - name: macOS - Save Homebrew deps to cache
+      #   if: ${{ matrix.os == 'macos-latest' && steps.cache-homebrew-deps-restore.outputs.cache-hit != 'true' }}
+      #   id: cache-homebrew-deps-save
+      #   uses: actions/cache/save@v4
+      #   with:
+      #     path: brew-cache
+      #     key: ${{ steps.cache-homebrew-deps-restore.outputs.cache-primary-key }}
+
+      - name: Clone libavif repo
+        run: |
+          git clone --depth 1 https://github.com/AOMediaCodec/libavif.git
+          ls -la
+
+      - name: Restore cached libyuv
+        id: cache-libyuv-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            libavif/ext/libyuv
+          key: ${{ runner.os }}-libs-libyuv
+
+      - name: Build libyuv
+        if: steps.cache-libyuv-restore.outputs.cache-hit != 'true'
+        working-directory: ./libavif/ext/
+        run: |
+          ./libyuv.cmd
+
+      - name: Save libyuv to cache
+        if: steps.cache-libyuv-restore.outputs.cache-hit != 'true'
+        id: cache-libyuv-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            libavif/ext/libyuv
+          key: ${{ steps.cache-libyuv-restore.outputs.cache-primary-key }}
+
+      - name: Restore cached libsharpyuv
+        id: cache-libsharpyuv-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            libavif/ext/libwebp
+          key: ${{ runner.os }}-libs-libsharpyuv
+
+      - name: Build libsharpyuv
+        if: steps.cache-libsharpyuv-restore.outputs.cache-hit != 'true'
+        working-directory: ./libavif/ext/
+        run: |
+          ./libsharpyuv.cmd
+
+      - name: Save libsharpyuv to cache
+        if: steps.cache-libsharpyuv-restore.outputs.cache-hit != 'true'
+        id: cache-libsharpyuv-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            libavif/ext/libwebp
+          key: ${{ steps.cache-libsharpyuv-restore.outputs.cache-primary-key }}
+
+      - name: Restore cached aom
+        id: cache-aom-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            libavif/ext/aom
+          key: ${{ runner.os }}-libs-aom
+
+      - name: Build aom
+        if: steps.cache-aom-restore.outputs.cache-hit != 'true'
+        working-directory: ./libavif/ext/
+        run: |
+          ./aom.cmd
+
+      - name: Save aom to cache
+        if: steps.cache-aom-restore.outputs.cache-hit != 'true'
+        id: cache-aom-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            libavif/ext/aom
+          key: ${{ steps.cache-aom-restore.outputs.cache-primary-key }}
+
+      - name: Restore cached dav1d
+        id: cache-dav1d-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            libavif/ext/dav1d
+          key: ${{ runner.os }}-libs-dav1d
+
+      - name: Build dav1d
+        if: steps.cache-dav1d-restore.outputs.cache-hit != 'true'
+        working-directory: ./libavif/ext/
+        run: |
+          ./dav1d.cmd
+
+      - name: Save dav1d to cache
+        if: steps.cache-dav1d-restore.outputs.cache-hit != 'true'
+        id: cache-dav1d-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            libavif/ext/dav1d
+          key: ${{ steps.cache-dav1d-restore.outputs.cache-primary-key }}
+
+      - name: Build libavif binaries
+        run: |
+          cd ./libavif/
+          mkdir build
+          cd build
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DAVIF_CODEC_AOM=ON -DAVIF_LOCAL_AOM=ON -DAVIF_CODEC_AOM_DECODE=ON -DAVIF_CODEC_AOM_ENCODE=ON -DAVIF_CODEC_DAV1D=ON -DAVIF_LOCAL_DAV1D=ON -DAVIF_LOCAL_LIBYUV=ON -DAVIF_BUILD_APPS=ON ..
+          ninja
+          ls -la
+
+      - name: Test avifenc
+        run: |
+          ./libavif/build/avifenc --version
+
+      - name: Test avifdec
+        run: |
+          ./libavif/build/avifdec --version
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-avif-binaries
+          path: |
+            ./libavif/build/avifenc
+            ./libavif/build/avifdec
+
+      # - if: ${{ matrix.os == 'ubuntu-latest' }}
+      #   run: |
+      #     echo ""
+
+      # - if: ${{ matrix.os == 'macos-latest' }}
+      #   run: |
+      #     echo ""
+
+      # - if: ${{ matrix.os == 'windows-latest' }}
+      #   run: |
+      #     echo ""

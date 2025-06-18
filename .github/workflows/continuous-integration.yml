@@ -1,0 +1,124 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+# file-version: 1.0
+
+name: "Continuous Integration"
+
+on:
+  - pull_request
+  - push
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "${{ github.event_name }}-${{ github.workflow }}-${{ github.head_ref || github.run_id }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: "Validate Project"
+
+    uses: "mimmi20/ci/.github/workflows/validate.yml@master"
+    with:
+      extensions: "ctype, curl, dom, iconv, intl, mbstring, simplexml, tokenizer, xml, xmlwriter"
+      ini-values: "opcache.enable=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On, intl.default_locale=de, intl.use_exceptions=1, zend.exception_ignore_args=0"
+      composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
+      skip-validate-composer: true
+      skip-validate-yaml: false
+      skip-validate-md: false
+      skip-phplint: true
+      skip-check-composer: true
+      skip-ec-checker: true
+      dependency-analyser-options: ""
+
+  install:
+    name: "Install Project"
+
+    needs: "validate"
+
+    uses: "mimmi20/ci/.github/workflows/install.yml@master"
+    with:
+      extensions: "ctype, curl, dom, iconv, intl, mbstring, simplexml, tokenizer, xml, xmlwriter"
+      ini-values: "opcache.enable=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On, intl.default_locale=de, intl.use_exceptions=1, zend.exception_ignore_args=0"
+      composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
+      skip-php-install: true
+      skip-npm-install: false
+
+#  analytics:
+#    name: "Project Analysis"
+#
+#    needs: "install"
+#
+#    uses: "mimmi20/ci/.github/workflows/analytics.yml@master"
+#    with:
+#      extensions: "ctype, curl, dom, fileinfo, iconv, intl, mbstring, simplexml, tokenizer, xml, xmlwriter"
+#      ini-values: "opcache.enable=1, opcache.fast_shutdown=0, zend.assertions=1, assert.exception=On, intl.default_locale=de, intl.use_exceptions=1, zend.exception_ignore_args=0"
+#      composer-options: "--optimize-autoloader --prefer-dist --prefer-stable -v"
+#      skip-php-cs-fixer: true
+#      skip-phpcs: true
+#      skip-phpstan: true
+#      skip-rector: true
+#      skip-eslint: true
+#      skip-stylelint: true
+#      skip-prettier: true
+#      phpcs-options: ""
+#
+#  test:
+#    name: "Test"
+#
+#    needs: "analytics"
+#
+#    runs-on: "${{ matrix.operating-system }}"
+#    timeout-minutes: 10
+#    continue-on-error: false
+#
+#    strategy:
+#      fail-fast: false
+#
+#      matrix:
+#        operating-system:
+#          - "ubuntu-latest"
+#
+#        node-version:
+#          - "22"
+#          - "23"
+#          - "24"
+#
+#    steps:
+#      - name: "Checkout"
+#        uses: "actions/checkout@v4"
+#        with:
+#          # Disabling shallow clone is recommended for improving relevancy of reporting
+#          fetch-depth: 0
+#          lfs: false
+#          persist-credentials: false
+#
+#      - name: "Use Node.js ${{ matrix.node-version }}"
+#        uses: "actions/setup-node@v4"
+#        with:
+#          node-version: "${{ matrix.node-version }}"
+#
+#      - run: npm ci
+#      - run: npm test
+
+  # This is a meta job to avoid to have to constantly change the protection rules
+  # whenever we touch the matrix.
+  tests-status:
+    name: "Unit & Integration Tests Status"
+
+    runs-on: "ubuntu-24.04"
+
+    if: always()
+
+    needs:
+      - "install"
+
+    steps:
+      - name: Successful run
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: exit 0
+
+      - name: Failing run
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1

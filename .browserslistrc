@@ -1,0 +1,25 @@
+# Browsers that we want to support
+unreleased versions
+last 2 years
+> 0.1% in DE and last 10 versions
+Firefox ESR
+
+# exclude browsers without security updates
+not dead
+
+# exclude opera mini
+not op_mini all
+
+# exclude QQ Browser
+not and_qq <= 14.9
+
+# exclude UC Browser for Android
+not and_uc <= 15.5
+
+# exclude Samsung Internet (versions lower than 23)
+not samsung <= 22
+
+# exclude kaios
+# @see https://github.com/postcss/autoprefixer/issues/1533
+# @see https://github.com/twbs/bootstrap/issues/41342
+not kaios <= 2.5

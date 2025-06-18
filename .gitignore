@@ -1,4 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Directories
 node_modules
-yarn.lock
-test/tmp
-vendor/cwebp*
+dist
+dist-ssr
+test
+temp
+coverage
+.vite-inspect
+other
+package-lock.json
+
+# Files
+todo
+*.local
+*.bak
+*.tgz

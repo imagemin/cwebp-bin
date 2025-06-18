@@ -1,0 +1,38 @@
+# Dependency Review Action
+#
+# This Action will scan dependency manifest files that change as part of a Pull Request, surfacing known-vulnerable versions of the packages declared or updated in the PR. Once installed, if the workflow run is marked as required, PRs introducing known-vulnerable packages will be blocked from merging.
+#
+# Source repository: https://github.com/actions/dependency-review-action
+# Public documentation: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-enforcement
+
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+# file-version: 1.0
+
+name: "Dependency Review"
+
+on:
+  - pull_request
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+
+      - name: "Dependency Review"
+        uses: "actions/dependency-review-action@v4"
+        with:
+          "license-check": true
+          "vulnerability-check": true
+          "comment-summary-in-pr": true

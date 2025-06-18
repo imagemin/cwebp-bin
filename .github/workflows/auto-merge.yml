@@ -1,0 +1,21 @@
+name: "Auto merge"
+
+on:
+  - pull_request_target
+
+jobs:
+  automerge:
+    runs-on: "ubuntu-24.04"
+
+    if: ${{ github.actor == 'dependabot[bot]' }}
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: "fastify/github-action-merge-dependabot@v3"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          use-github-auto-merge: true
+          merge-method: "merge"

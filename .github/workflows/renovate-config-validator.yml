@@ -1,0 +1,20 @@
+name: "Validate Config for Renovate"
+
+on:
+  - pull_request
+  - push
+
+jobs:
+  validate:
+    runs-on: "ubuntu-24.04"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+
+      - uses: "suzuki-shunsuke/github-action-renovate-config-validator@v1.1.1"

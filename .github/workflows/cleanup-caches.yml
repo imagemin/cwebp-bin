@@ -1,0 +1,44 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+# file-version: 1.0
+
+name: "Cleanup caches by a branch"
+
+on:
+  pull_request:
+    types:
+      - "closed"
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: "ubuntu-24.04"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+
+      - name: "Cleanup"
+        run: |
+          gh extension install actions/gh-actions-cache
+
+          REPO=${{ github.repository }}
+          BRANCH=${{ github.ref }}
+
+          echo "Fetching list of cache key"
+          cacheKeysForPR=$(gh actions-cache list -R $REPO -B $BRANCH | cut -f 1 )
+
+          ## Setting this to not fail the workflow while deleting cache keys.
+          set +e
+          echo "Deleting caches..."
+          for cacheKey in $cacheKeysForPR
+          do
+              gh actions-cache delete $cacheKey -R $REPO -B $BRANCH --confirm
+          done
+          echo "Done"
+        env:
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

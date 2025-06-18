@@ -1,18 +1,25 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates
+
+# file-version: 1.0
 
 version: 2
+
 updates:
   - package-ecosystem: "npm"
 
     directory: "/"
 
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "tuesday"
       time: "04:00"
       timezone: "Europe/Berlin"
+
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
 
     open-pull-requests-limit: 10
 
@@ -28,6 +35,41 @@ updates:
 
     commit-message:
       include: "scope"
-      prefix: "npm"
+      prefix: "npm (base)"
+
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "github-actions"
+
+    directory: "/"
+
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+      timezone: "Europe/Berlin"
+
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+    open-pull-requests-limit: 10
+
+    assignees:
+      - "mimmi20"
+
+    labels:
+      - "dependencies"
+
+    target-branch: "master"
+
+    commit-message:
+      prefix: "github-actions"
+
+    ignore:
+      - dependency-name: "mimmi20/ci"
+      - dependency-name: "release-drafter/release-drafter"
 
     rebase-strategy: "auto"
